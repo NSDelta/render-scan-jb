@@ -1,6 +1,9 @@
 TARGET = iphone:clang:latest:14.0
 ARCHS = arm64
 
+# Dopamine 是 rootless 越狱, 必须用 rootless 打包 scheme
+export THEOS_PACKAGE_SCHEME = rootless
+
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = RenderTraceTweak
