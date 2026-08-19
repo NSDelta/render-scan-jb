@@ -1,0 +1,43 @@
+name: Build RenderTraceTweak
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Theos
+        run: |
+          export THEOS=/opt/theos
+          brew install ldid
+          sudo mkdir -p /opt
+          sudo git clone --recursive https://github.com/theos/theos.git $THEOS
+          sudo chown -R $USER $THEOS
+
+      - name: Build
+        run: |
+          export THEOS=/opt/theos
+          make
+
+      - name: Package deb
+        run: |
+          export THEOS=/opt/theos
+          make package
+
+      - name: Upload deb
+        uses: actions/upload-artifact@v4
+        with:
+          name: RenderTraceTweak-deb
+          path: packages/*.deb
+
+      - name: Upload dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: RenderTraceTweak-dylib
+          path: .theos/obj/debug/RenderTraceTweak.dylib
