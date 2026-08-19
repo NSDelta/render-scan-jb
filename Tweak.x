@@ -1,9 +1,8 @@
 // ============================================================
 //  RenderTraceTweak - 追踪 scale setter 调用点 (Dopamine tweak)
 //  hook 微型 setter (STR W<x>,[X0,#0x50/0x54]; RET) 记录调用点+值
-//  走 ellekit/substrate 框架, 不直接改代码页, 不受 CS 限制
+//  用 ellekit 的 hookf, 不直接改代码页, 不受 CS 限制
 // ============================================================
-#import <substrate.h>
 #import <mach-o/dyld.h>
 #import <stdio.h>
 #import <stdarg.h>
@@ -11,6 +10,9 @@
 #import <unistd.h>
 #import <fcntl.h>
 #import <stdlib.h>
+
+// ellekit hookf (运行时由 ellekit 提供, 链接期用 -Wl,-U,_hookf 容忍)
+extern void hookf(void *hookee, void *replacement, void **result);
 
 static uint64_t g_slide = 0;
 static char g_log[131072];
@@ -65,7 +67,7 @@ static void init(void) {
     tlog("[RT] RenderTraceTweak loaded slide=0x%llx pid=%d\n", g_slide, getpid());
     if (g_slide == 0) { tlog("[RT] ERROR: worldflipper not found\n"); return; }
 
-    MSHookFunction((void *)(g_slide + 0x100000000ULL + 0xb8cc), (void *)repl_sx50a, (void **)&orig_sx50a);
-    MSHookFunction((void *)(g_slide + 0x100000000ULL + 0x1ca6cc), (void *)repl_sy54a, (void **)&orig_sy54a);
+    hookf((void *)(g_slide + 0x100000000ULL + 0xb8cc), (void *)repl_sx50a, (void **)&orig_sx50a);
+    hookf((void *)(g_slide + 0x100000000ULL + 0x1ca6cc), (void *)repl_sy54a, (void **)&orig_sy54a);
     tlog("[RT] hooks installed\n");
 }
