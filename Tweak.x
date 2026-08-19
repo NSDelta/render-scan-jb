@@ -57,7 +57,7 @@ static void init(void) {
     for (uint32_t i = 0; i < _dyld_image_count(); i++) {
         const char *n = _dyld_get_image_name(i);
         if (n && strstr(n, "worldflipper")) {
-            g_slide = _dyld_get_image_vmaddr_slide((const struct mach_header *)_dyld_get_image_header(i));
+            g_slide = _dyld_get_image_vmaddr_slide(i);
             break;
         }
     }
