@@ -1,0 +1,8 @@
+Package: com.nsdelta.rendertrace
+Name: RenderTrace
+Version: 1.0
+Architecture: iphoneos-arm
+Depends: mobilesubstrate
+Maintainer: NSDelta
+Section: Tweaks
+Description: trace scale setter call sites (render-scale-v1 iOS)
